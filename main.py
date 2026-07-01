@@ -75,8 +75,26 @@ def calculate_confidence(symbol):
     else: return "NO_POSITION", max(long_score, short_score), data_15m
 
 def bot_loop():
+    while True:
+        for symbol in symbols:  # Coin တစ်ခုချင်းစီကို အလှည့်ကျ စစ်ပါမယ်
+            try:
+                # ဒေတာဆွဲမယ်
+                data = fetch_data(symbol, '15m')
+                
+                # Signal စစ်ဆေးတဲ့ Logic (အစ်ကို့ရဲ့ လက်ရှိ ကုဒ်အတိုင်းပါ)
+                # ...
+                
+                # Telegram ပို့မယ်
+                msg = f"Market Update: {symbol}\nPrice: {data['close']}"
+                send_telegram_message(msg)
+                
+                time.sleep(2)  # Telegram Spam မဖြစ်အောင် ၂ စက္ကန့် စောင့်မယ်
+            except Exception as e:
+                print(f"Error on {symbol}: {e}")
+        
+        time.sleep(60)  # တစ်ပတ်ကုန်ရင် ၆၀ စက္ကန့် စောင့်ပြီး စောင့်မယ်
     print("Bot Loop Started...")
-    symbol = "BTC/USDT"
+    symbol = ["BTC/USDT", "SOL/USDT", "BNB/USDT", "ETH/USDT", "XRP/USDT", "ADA/USDT", "SUI/USDT"]
     while True:
         try:
             direction, score, data = calculate_confidence(symbol)
