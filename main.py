@@ -101,6 +101,9 @@ def bot_loop():
         time.sleep(600)
 
 if __name__ == "__main__":
+    # ဆာဗာ စဖွင့်ချင်း Telegram ထဲ စမ်းသပ်စာ ပို့ခိုင်းခြင်း
+    send_telegram_message("🤖 AI Trading Bot စတင်အလုပ်လုပ်ပါပြီ။ ကွန်ရက်ချိတ်ဆက်မှု အောင်မြင်ပါသည်။")
+
     threading.Thread(target=bot_loop, daemon=True).start()
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
