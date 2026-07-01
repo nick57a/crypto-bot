@@ -3,7 +3,6 @@ import time
 import threading
 import ccxt
 import pandas as pd
-import pandas_ta as ta
 import requests
 from flask import Flask
 
@@ -12,8 +11,11 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     return "AI Trading Bot Is Running 24/7!"
+
+# သင့်ရဲ့ Telegram အချက်အလက်များ
 TELEGRAM_BOT_TOKEN = "8977052703:AAGT9gah3REzE3lZtbr5PqvwqeS_JNjnRYY"
 TELEGRAM_CHAT_ID = "@cryptosignalviewer"
+
 def send_telegram_message(message):
     try:
         url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -24,15 +26,28 @@ def send_telegram_message(message):
 
 def fetch_data(symbol, timeframe):
     exchange = ccxt.binance()
-    bars = exchange.fetch_ohlcv(symbol, timeframe, limit=100)
+    bars = exchange.fetch_ohlcv(symbol, timeframe, limit=250)
     df = pd.DataFrame(bars, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
     
-    df.ta.rsi(length=14, append=True)
-    df.ta.macd(append=True)
-    df.ta.bbands(length=20, std=2, append=True)
-    df.ta.ema(length=20, append=True)
-    df.ta.ema(length=50, append=True)
-    df.ta.ema(length=200, append=True)
+    # EMA တွက်ချက်ခြင်း (Custom)
+    df['EMA_20'] = df['close'].ewm(span=20, adjust=False).mean()
+    df['EMA_50'] = df['close'].ewm(span=50, adjust=False).mean()
+    df['EMA_200'] = df['close'].ewm(span=200, adjust=False).mean()
+    
+    # Bollinger Bands တွက်ချက်ခြင်း (Custom)
+    ma20 = df['close'].rolling(window=20).mean()
+    std20 = df['close'].rolling(window=20).std()
+    df['BBL_20_2.0'] = ma20 - (2 * std20)
+    df['BBU_20_2.0'] = ma20 + (2 * std20)
+    
+    # RSI တွက်ချက်ခြင်း (Custom Standard Formula)
+    delta = df['close'].diff()
+    gain = delta.clip(lower=0)
+    loss = -delta.clip(upper=0)
+    ema_gain = gain.ewm(com=13, adjust=False).mean()
+    ema_loss = loss.ewm(com=13, adjust=False).mean()
+    rs = ema_gain / ema_loss
+    df['RSI_14'] = 100 - (100 / (1 + rs))
     
     return df.iloc[-1]
 
