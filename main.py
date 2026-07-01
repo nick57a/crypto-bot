@@ -14,7 +14,7 @@ def home():
 
 # သင့်ရဲ့ Telegram အချက်အလက်များ
 TELEGRAM_BOT_TOKEN = "8977052703:AAGT9gah3REzE3lZtbr5PqvwqeS_JNjnRYY"
-TELEGRAM_CHAT_ID = "@cryptosignalviewer"
+TELEGRAM_CHAT_ID = "https://t.me/cryptosignalviewer"
 
 def send_telegram_message(message):
     try:
