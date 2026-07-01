@@ -12,12 +12,8 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     return "AI Trading Bot Is Running 24/7!"
-
-# ⬇️ ဒီနေရာမှာ အစ်ကို့ရဲ့ Token နဲ့ Chat ID ကို ပြောင်းထည့်ပေးပါ ⬇️
-TELEGRAM_BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"
-TELEGRAM_CHAT_ID = "@YOUR_CHANNEL_USERNAME"
-# ⬆️ အပေါ်က နေရာလေးကို ပြောင်းရန် ⬆️
-
+TELEGRAM_BOT_TOKEN = "8977052703:AAGT9gah3REzE3lZtbr5PqvwqeS_JNjnRYY"
+TELEGRAM_CHAT_ID = "@cryptosignalviewer"
 def send_telegram_message(message):
     try:
         url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
